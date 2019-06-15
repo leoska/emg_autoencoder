@@ -8,6 +8,7 @@ Created on Sat Jun 15 14:14:00 2019
 from simpleautoencoder import SimpleAutoEncoder
 from dataset import create_dataset
 from subplots import plot_signal, plot_signals, plot_examples
+from tensorflow.keras import backend as K
 import numpy as np
 
 #%%
@@ -40,7 +41,7 @@ plot_signals(signals = [x_train_simple[3], x_test_simple[3]], colors = ['r', 'b'
 #%%
 simpleAutoEncoder = SimpleAutoEncoder()
 model = simpleAutoEncoder.autoencoder()
-history = simpleAutoEncoder.fit(train_data = x_train_simple, validation_data = [x_test_simple, x_test_simple])
+history = simpleAutoEncoder.fit(train_data = x_train_simple, validation_data = [x_val_simple, x_val_simple])
 
 decoded_stocks = model.predict(x_test_simple)
 
@@ -57,3 +58,6 @@ simpleAutoEncoder.plot_history()
 simpleAutoEncoder.network_evaluation()
 
 plot_examples(x_test_simple, decoded_stocks)
+
+#%%
+K.clear_session()

@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import TensorBoard
 from subplots import plot_history, network_evaluation
 
 class SimpleAutoEncoder:
-    def __init__(self, encoding_dim = [64], signal_len = 481, channels = 1):
+    def __init__(self, encoding_dim = [32], signal_len = 481, channels = 1):
         self.encoding_dim = encoding_dim
         self.signal_len = signal_len
         self.channels = channels
@@ -68,7 +68,7 @@ class SimpleAutoEncoder:
         self.model = model
         return model
     
-    def fit(self, train_data, validation_data, batch_size = 64, epochs = 50, shuffle = True, tb_logs = 'tb_logs'):
+    def fit(self, train_data, validation_data, batch_size = 64, epochs = 90, shuffle = True, tb_logs = 'tb_logs'):
         tensorboard = TensorBoard(log_dir = tb_logs, histogram_freq = 1, write_graph = True, write_images = True)
         
         history = self.model.fit(train_data, train_data, 
@@ -91,7 +91,7 @@ class SimpleAutoEncoder:
     def plot_history(self):
         plot_history(self.history)
 
-    def network_evaluation(self, epochs = 50, batch_size = 64):
+    def network_evaluation(self, epochs = 90, batch_size = 64):
         network_evaluation(self.history, epochs, batch_size)
         
     def savemodel(self):

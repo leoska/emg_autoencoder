@@ -31,7 +31,17 @@ def plot_history(history):
     plt.title("Train loss")
     ax = plt.subplot(1, 2, 2)
     plt.plot(history.history["val_loss"])
-    plt.title("Test loss")
+    plt.title("Validation loss")
+    plt.show()
+    
+    plt.figure(figsize=(15, 5))
+    ax = plt.subplot(1, 2, 1)
+    plt.plot(history.history["accuracy"])
+    plt.title("Train acc")
+    ax = plt.subplot(1, 2, 2)
+    plt.plot(history.history["val_accuracy"])
+    plt.title("Validation acc")
+    plt.show()
     
 # Функция выводит сравнение графиков
 def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
@@ -68,14 +78,21 @@ def network_evaluation(history, epochs, batch_size):
     # строим графики потерь и точности
     N = np.arange(0, epochs)
     #plt.style.use("ggplot")
-    plt.figure()
+    plt.figure(figsize=(15, 5))
+    ax = plt.subplot(1, 2, 1)
     plt.plot(N, history.history["loss"], label="train_loss")
     plt.plot(N, history.history["val_loss"], label="val_loss")
+    plt.title("Training Loss (Simple NN)")
+    plt.xlabel("Epoch #")
+    plt.ylabel("Loss")
+    plt.legend()
+    
+    ax = plt.subplot(1, 2, 2)
     plt.plot(N, history.history["accuracy"], label="train_accuracy")
     plt.plot(N, history.history["val_accuracy"], label="val_accuracy")
-    plt.title("Training Loss and Accuracy (Simple NN)")
+    plt.title("Training Accuracy (Simple NN)")
     plt.xlabel("Epoch #")
-    plt.ylabel("Loss/Accuracy")
+    plt.ylabel("Accuracy")
     plt.legend()
     plt.show()
 #plt.savefig(args["plot"])
