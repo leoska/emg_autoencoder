@@ -12,8 +12,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
 from subplots import plot_history, network_evaluation
 
-class SimpleAutoEncoder:
-    def __init__(self, encoding_dim = [32], signal_len = 481, channels = 1):
+class DeepAutoEncoder:
+    def __init__(self, encoding_dim = [64, 32], signal_len = 481, channels = 1):
         self.encoding_dim = encoding_dim
         self.signal_len = signal_len
         self.channels = channels
@@ -27,6 +27,8 @@ class SimpleAutoEncoder:
     def _encoder(self):
         input_window = Input(shape=(self.signal_len,))
         x = Dense(self.encoding_dim[0])(input_window)
+        x = LeakyReLU(alpha=0.2)(x)
+        x = Dense(self.encoding_dim[1])(x)
         
         # "encoded" is the encoded representation of the input
         encoded = LeakyReLU(alpha=0.2)(x)
@@ -40,7 +42,9 @@ class SimpleAutoEncoder:
         return encoder
     
     def _decoder(self):
-        encoded_window = Input(shape=(self.encoding_dim[0],))
+        encoded_window = Input(shape=(self.encoding_dim[1],))
+        x = Dense(self.encoding_dim[0])(encoded_window)
+        x = LeakyReLU(alpha=0.2)(x)
         x = Dense(self.signal_len)(encoded_window)
         
         # "decoded" is the lossy reconstruction of the input

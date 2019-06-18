@@ -28,7 +28,9 @@ def plot_history(history):
     plt.figure(figsize=(15, 5))
     ax = plt.subplot(1, 2, 1)
     plt.plot(history.history["loss"])
-    plt.title("Train loss")
+    plt.title("Оценка ошибки на тренировочных данных")
+    plt.xlabel("Эпоха #")
+    plt.ylabel("Значение ошибки")
     ax = plt.subplot(1, 2, 2)
     plt.plot(history.history["val_loss"])
     plt.title("Validation loss")
@@ -51,7 +53,7 @@ def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
         # display original
         ax = plt.subplot(4, n, i + 1)
         if i == 0:
-            ax.set_ylabel("Input", fontweight=600)
+            ax.set_ylabel("Вход", fontweight=600)
         else:
             ax.get_yaxis().set_visible(False)
         plt.plot(stock_input[idx], "r")
@@ -61,7 +63,7 @@ def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
         # display reconstruction
         ax = plt.subplot(4, n, i + 1 + n)
         if i == 0:
-            ax.set_ylabel("Output", fontweight=600)
+            ax.set_ylabel("Выход", fontweight=600)
         else:
             ax.get_yaxis().set_visible(False)
         plt.plot(stock_decoded[idx])

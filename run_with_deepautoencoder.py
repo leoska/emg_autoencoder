@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Jun 18 16:39:03 2019
+
+@author: leoska
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Sat Jun 15 14:14:00 2019
 
 @author: leoska
 """
 
-from simpleautoencoder import SimpleAutoEncoder
+from deepautoencoder import DeepAutoEncoder
 from dataset import create_dataset
 from subplots import plot_signal, plot_signals, plot_examples
 from tensorflow.keras import backend as K
@@ -27,26 +34,26 @@ print("Load data successful")
 #%%
 plot_signal(train_signals[0], label = "Тренировочный сигнал", title = "Пример сигнала")
 
-x_train_simple = np.asarray(train_signals).reshape((len(train_signals), np.prod(np.asarray(train_signals).shape[1:])))
-x_test_simple = np.asarray(test_signals).reshape((len(test_signals), np.prod(np.asarray(test_signals).shape[1:])))
-x_val_simple = np.asarray(val_signals).reshape((len(val_signals), np.prod(np.asarray(val_signals).shape[1:])))
+x_train_deep = np.asarray(train_signals).reshape((len(train_signals), np.prod(np.asarray(train_signals).shape[1:])))
+x_test_deep = np.asarray(test_signals).reshape((len(test_signals), np.prod(np.asarray(test_signals).shape[1:])))
+x_val_deep = np.asarray(val_signals).reshape((len(val_signals), np.prod(np.asarray(val_signals).shape[1:])))
 
-print("x_train_simple shape: " + str(np.asarray(x_train_simple).shape))
-print("x_test_simple shape: " + str(np.asarray(x_test_simple).shape))
-print("x_val_simple shape: " + str(np.asarray(x_val_simple).shape))
+print("x_train_deep shape: " + str(np.asarray(x_train_deep).shape))
+print("x_test_deep shape: " + str(np.asarray(x_test_deep).shape))
+print("x_val_deep shape: " + str(np.asarray(x_val_deep).shape))
 
-plot_signals(signals = [x_train_simple[3], x_test_simple[3]], colors = ['r', 'b'],
+plot_signals(signals = [x_train_deep[3], x_test_deep[3]], colors = ['r', 'b'],
              labels = ["Тренировочный сигнал", "Тестовый сигнал"], title = "Сравнение сигналов")
 
 #%%
-simpleAutoEncoder = SimpleAutoEncoder()
-model = simpleAutoEncoder.autoencoder()
-history = simpleAutoEncoder.fit(train_data = x_train_simple, validation_data = [x_val_simple, x_val_simple])
+DeepAutoEncoder = DeepAutoEncoder()
+model = DeepAutoEncoder.autoencoder()
+history = DeepAutoEncoder.fit(train_data = x_train_deep, validation_data = [x_val_deep, x_val_deep])
 
-decoded_stocks = model.predict(x_test_simple)
+decoded_stocks = model.predict(x_test_deep)
 
 #%%
-score = simpleAutoEncoder.evaluate(test_data = x_test_simple)
+score = DeepAutoEncoder.evaluate(test_data = x_test_deep)
 print(score)
 print('Test accuracy:', score[1])
 
@@ -54,15 +61,15 @@ print('Test accuracy:', score[1])
 print(decoded_stocks.shape)
 print(history.history.keys())
 
-simpleAutoEncoder.plot_history()
-simpleAutoEncoder.network_evaluation()
+DeepAutoEncoder.plot_history()
+DeepAutoEncoder.network_evaluation()
 
-plot_examples(x_test_simple, decoded_stocks)
+plot_examples(x_test_deep, decoded_stocks)
 
 #%%
 # Закодированные сигналы
-encoded_data = simpleAutoEncoder.encoder.predict(x_test_simple)
-plot_examples(x_test_simple, encoded_data)
+encoded_data = DeepAutoEncoder.encoder.predict(x_test_deep)
+plot_examples(x_test_deep, encoded_data)
 
 #%%
 K.clear_session()
