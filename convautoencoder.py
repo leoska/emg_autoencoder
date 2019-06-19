@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jun 14 14:10:30 2019
+Created on Wed Jun 19 16:04:56 2019
 
 @author: leoska
 """
 
-from tensorflow.keras.layers import Input, Dense, LeakyReLU, BatchNormalization
+from tensorflow.keras.layers import Input, LeakyReLU, Conv1D, MaxPooling1D, UpSampling1D
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
 from subplots import plot_history, network_evaluation
 
-class DeepAutoEncoder:
-    def __init__(self, encoding_dim = [64, 32], signal_len = 481, channels = 1):
-        self.encoding_dim = encoding_dim
+class ConvAutoEncoder:
+    def __init__(self, signal_len = 481, channels = 1):
         self.signal_len = signal_len
         self.channels = channels
         self.optimizer = None
@@ -25,35 +24,58 @@ class DeepAutoEncoder:
         self.score = None
         
     def _encoder(self):
-        input_window = Input(shape=(self.signal_len,))
-        x = Dense(self.encoding_dim[0])(input_window)
-        x = LeakyReLU(alpha=0.2)(x)
-        #x = BatchNormalization()(x)
-        x = Dense(self.encoding_dim[1])(x)
+        feature_maps = [16, 1]
+        kernel_size = [3]
+        input_window = Input(shape=(self.signal_len, 1))
         
+        # Первый слой свертки
+        x = Conv1D(feature_maps[0], kernel_size[0], padding = "same")(input_window)
+        x = LeakyReLU(alpha=0.2)(x) # 481 dim
+        
+        # Слой подвыборки
+        x = MaxPooling1D(pool_size = (2), padding = "same")(x) # 241 dim
+        
+        # Второй слой свертки
+        x = Conv1D(feature_maps[1], kernel_size, padding = "same")(x)
+        x = LeakyReLU(alpha=0.2)(x)
+        
+        # Второй слой подвыборки
         # "encoded" is the encoded representation of the input
-        encoded = LeakyReLU(alpha=0.2)(x)
+        encoded = MaxPooling1D(pool_size = (2), padding = "same")(x) # 121 dim
         
         # this model maps an input to its encoded representation
         encoder = Model(inputs = input_window, outputs = encoded)
         
+        encoder.summary()
         #encoder.compile(optimizer = 'adam', loss = 'mse', metrics = ["accuracy"])
         
         self.encoder = encoder
         return encoder
     
     def _decoder(self):
-        encoded_window = Input(shape=(self.encoding_dim[1],))
-        x = Dense(self.encoding_dim[0])(encoded_window)
+        feature_maps = [16, 1]
+        kernel_size = [3, 2]
+        encoded_window = Input(shape=(120, 1))
+        
+        x = Conv1D(feature_maps[1], kernel_size[0], padding = "same")(encoded_window)
         x = LeakyReLU(alpha=0.2)(x)
-        #x = BatchNormalization()(x)
-        x = Dense(self.signal_len)(x)
+        
+        x = UpSampling1D(2)(x)
+        
+        x = Conv1D(feature_maps[0], kernel_size[1], padding = "same")(x)
+        x = LeakyReLU(alpha=0.2)(x)
+        
+        x = UpSampling1D(2)(x)
+        
+        x = Conv1D(feature_maps[1], kernel_size[0], padding = "same")(x)
         
         # "decoded" is the lossy reconstruction of the input
         decoded = LeakyReLU(alpha=0.2)(x)
         
         # create the decoder model
         decoder = Model(inputs = encoded_window, outputs = decoded)
+        
+        decoder.summary()
         
         #decoder.compile(optimizer = 'adam', loss = 'mse', metrics = ["accuracy"])
         
@@ -64,11 +86,15 @@ class DeepAutoEncoder:
         # Encoder model
         ec = self._encoder()
         
+        print("error here")
+        
         # Decoder model
         dc = self._decoder()
         
+        print("error here2")
+        
         # this model maps an input to its reconstruction
-        input_signal = Input(shape=(self.signal_len,))
+        input_signal = Input(shape=(self.signal_len, 1))
         ec_out = ec(input_signal)
         dc_out = dc(ec_out)
         model = Model(inputs = input_signal, outputs = dc_out)
@@ -86,7 +112,7 @@ class DeepAutoEncoder:
         self.model = model
         return model
     
-    def fit(self, train_data, validation_data, batch_size = 64, epochs = 120, shuffle = True, tb_logs = 'tb_logs'):
+    def fit(self, train_data, validation_data, batch_size = 64, epochs = 90, shuffle = True, tb_logs = 'tb_logs'):
         tensorboard = TensorBoard(log_dir = tb_logs, histogram_freq = 1, write_graph = True, write_images = True)
         
         history = self.model.fit(train_data, train_data, 
@@ -113,7 +139,7 @@ class DeepAutoEncoder:
     def plot_model(self):
         plot_model(self.model, to_file='simplemodel.png', show_shapes=True)
 
-    def network_evaluation(self, epochs = 120, batch_size = 64):
+    def network_evaluation(self, epochs = 90, batch_size = 64):
         network_evaluation(self.history, epochs, batch_size)
         
     def savemodel(self):
