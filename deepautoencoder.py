@@ -119,7 +119,7 @@ class DeepAutoEncoder:
         
     def savemodel(self):
         if not os.path.exists(r'./weights'):
-            os.mkdir(r'/weights')
+            os.mkdir(r'./weights')
         
         self.encoder.save(r'./weights/deep_encoder.h5')
         self.decoder.save(r'./weights/deep_decoder.h5')

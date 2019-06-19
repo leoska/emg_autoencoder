@@ -61,4 +61,7 @@ plot_examples(test_signals, encoded_data)
 print(encoded_data[1].shape)
 
 #%%
+convAutoEncoder.savemodel()
+
+#%%
 K.clear_session()

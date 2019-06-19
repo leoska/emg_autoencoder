@@ -145,7 +145,7 @@ class ConvAutoEncoder:
         
     def savemodel(self):
         if not os.path.exists(r'./weights'):
-            os.mkdir(r'/weights')
+            os.mkdir(r'./weights')
         
         self.encoder.save(r'./weights/conv_encoder.h5')
         self.decoder.save(r'./weights/conv_decoder.h5')
