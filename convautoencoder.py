@@ -11,6 +11,7 @@ from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
 from subplots import plot_history, network_evaluation
+import os
 
 class ConvAutoEncoder:
     def __init__(self, signal_len = 481, channels = 1):
@@ -143,5 +144,9 @@ class ConvAutoEncoder:
         network_evaluation(self.history, epochs, batch_size)
         
     def savemodel(self):
-        pass
-    
+        if not os.path.exists(r'./weights'):
+            os.mkdir(r'/weights')
+        
+        self.encoder.save(r'./weights/conv_encoder.h5')
+        self.decoder.save(r'./weights/conv_decoder.h5')
+        self.model.save(r'./weights/ae_conv.h5')

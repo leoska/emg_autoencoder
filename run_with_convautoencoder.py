@@ -9,7 +9,6 @@ from convautoencoder import ConvAutoEncoder
 from dataset import create_dataset
 from subplots import plot_signal, plot_signals, plot_examples
 from tensorflow.keras import backend as K
-import numpy as np
 
 #%%
 files_path = "data_emg/" #path to your directory with 10 data.txt files
