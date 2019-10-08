@@ -5,7 +5,9 @@ Created on Fri Jun 14 14:03:37 2019
 @author: leoska
 """
 
+from sklearn import metrics
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 def plot_signal(signal, color = "b", label = "", title = ""):
@@ -28,25 +30,25 @@ def plot_history(history):
     plt.figure(figsize=(15, 5))
     ax = plt.subplot(1, 2, 1)
     plt.plot(history.history["loss"])
-    plt.title("Оценка ошибки на тренировочных данных")
+    plt.title("График ошибки на тренировочных данных")
     plt.xlabel("Эпоха #")
     plt.ylabel("Значение ошибки")
     ax = plt.subplot(1, 2, 2)
     plt.plot(history.history["val_loss"])
-    plt.title("Validation loss")
+    plt.title("График ошибки на проверочных данных")
     plt.show()
     
     plt.figure(figsize=(15, 5))
     ax = plt.subplot(1, 2, 1)
-    plt.plot(history.history["accuracy"])
-    plt.title("Train acc")
+    plt.plot(history.history["acc"])
+    plt.title("Доля верных ответов на тренировочных данных")
     ax = plt.subplot(1, 2, 2)
-    plt.plot(history.history["val_accuracy"])
-    plt.title("Validation acc")
+    plt.plot(history.history["val_acc"])
+    plt.title("Доля верных ответов на проверочных данных")
     plt.show()
     
 # Функция выводит сравнение графиков
-def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
+def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22, colors = ['r', 'b']):
     n = 10  
     plt.figure(figsize=(20, 8))
     for i, idx in enumerate(list(np.arange(0, test_samples, step))):
@@ -56,7 +58,7 @@ def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
             ax.set_ylabel("Вход", fontweight=600)
         else:
             ax.get_yaxis().set_visible(False)
-        plt.plot(stock_input[idx], "r")
+        plt.plot(stock_input[idx], colors[0])
         ax.get_xaxis().set_visible(False)
         
 
@@ -66,7 +68,7 @@ def plot_examples(stock_input, stock_decoded, test_samples = 158, step = 22):
             ax.set_ylabel("Выход", fontweight=600)
         else:
             ax.get_yaxis().set_visible(False)
-        plt.plot(stock_decoded[idx])
+        plt.plot(stock_decoded[idx], colors[1])
         ax.get_xaxis().set_visible(False)
     plt.show()
         
@@ -82,19 +84,35 @@ def network_evaluation(history, epochs, batch_size):
     #plt.style.use("ggplot")
     plt.figure(figsize=(15, 5))
     ax = plt.subplot(1, 2, 1)
-    plt.plot(N, history.history["loss"], label="train_loss")
-    plt.plot(N, history.history["val_loss"], label="val_loss")
-    plt.title("Training Loss (Simple NN)")
-    plt.xlabel("Epoch #")
-    plt.ylabel("Loss")
+    plt.plot(N, history.history["loss"], label="Ошибка на тренировочных данных")
+    plt.plot(N, history.history["val_loss"], label="Ошибка на проверочных данных")
+    plt.title("Оценка ошибки при обучении")
+    plt.xlabel("Эпоха #")
+    plt.ylabel("Значени ошибки")
     plt.legend()
     
     ax = plt.subplot(1, 2, 2)
-    plt.plot(N, history.history["accuracy"], label="train_accuracy")
-    plt.plot(N, history.history["val_accuracy"], label="val_accuracy")
-    plt.title("Training Accuracy (Simple NN)")
-    plt.xlabel("Epoch #")
-    plt.ylabel("Accuracy")
+    plt.plot(N, history.history["acc"], label="train_accuracy")
+    plt.plot(N, history.history["val_acc"], label="val_accuracy")
+    plt.title("Доля верных ответов при обучении")
+    plt.xlabel("Эпоха #")
+    plt.ylabel("Доля верных ответов")
     plt.legend()
     plt.show()
 #plt.savefig(args["plot"])
+    
+def show_confusion_matrix(validations, predictions):
+    matrix = metrics.confusion_matrix(validations, predictions)
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(matrix,
+                cmap="coolwarm",
+                linecolor='white',
+                linewidths=1,
+                #xticklabels=LABELS,
+                #yticklabels=LABELS,
+                annot=True,
+                fmt="d")
+    plt.title("Confusion Matrix")
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
+    plt.show()

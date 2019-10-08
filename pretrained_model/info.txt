@@ -1,0 +1,3 @@
+loss: 0.462
+accuracy: 0.889
+elapsed_time: 1158.756

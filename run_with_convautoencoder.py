@@ -57,11 +57,14 @@ plot_examples(test_signals, decoded_stocks)
 #%%
 # Закодированные сигналы
 encoded_data = convAutoEncoder.encoder.predict(test_signals)
-plot_examples(test_signals, encoded_data)
+plot_examples(test_signals, encoded_data, colors = ['r', 'g'])
 print(encoded_data[1].shape)
 
 #%%
-convAutoEncoder.savemodel()
+#convAutoEncoder.savemodel()
+
+#%%
+convAutoEncoder.plot_model()
 
 #%%
 K.clear_session()

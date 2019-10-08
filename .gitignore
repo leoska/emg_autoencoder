@@ -4,3 +4,15 @@ tb_logs/
 __pycache__/
 
 weights/
+
+decoder_model\.png
+
+encoder_model\.png
+
+conv_decoder\.png
+
+conv_encoder\.png
+
+model\.png
+
+ae_conv\.png

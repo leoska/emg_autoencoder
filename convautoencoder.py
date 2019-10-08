@@ -122,7 +122,7 @@ class ConvAutoEncoder:
                 batch_size=batch_size,
                 shuffle=shuffle,
                 validation_data = validation_data,
-                callbacks=[tensorboard],
+                #callbacks=[tensorboard],
                 verbose=1)
         
         self.history = history
@@ -136,9 +136,11 @@ class ConvAutoEncoder:
     def plot_history(self):
         plot_history(self.history)
         
-    # Не работает, нехватает правильно установленной библиотеки graphviz
+    # Работает, для работы нужно правильно установленная библиотека graphviz
     def plot_model(self):
-        plot_model(self.model, to_file='simplemodel.png', show_shapes=True)
+        plot_model(self.encoder, to_file='conv_encoder.png', show_shapes=True)
+        plot_model(self.decoder, to_file='conv_decoder.png', show_shapes=True)
+        plot_model(self.model, to_file='ae_conv.png', show_shapes=True)
 
     def network_evaluation(self, epochs = 90, batch_size = 64):
         network_evaluation(self.history, epochs, batch_size)

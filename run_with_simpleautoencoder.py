@@ -62,7 +62,7 @@ plot_examples(x_test_simple, decoded_stocks)
 #%%
 # Закодированные сигналы
 encoded_data = simpleAutoEncoder.encoder.predict(x_test_simple)
-plot_examples(x_test_simple, encoded_data)
+plot_examples(x_test_simple, encoded_data, colors = ['r', 'g'])
 
 #%%
 K.clear_session()
